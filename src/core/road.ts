@@ -25,7 +25,7 @@ export default class Road {
         this.right = x + width / 2;
 
         this.borders = [
-            new Border(new Point(this.x, this.top), new Point(this.x, this.bottom)),
+            new Border(new Point(this.left, this.top), new Point(this.left, this.bottom)),
             new Border(new Point(this.right, this.top), new Point(this.right, this.bottom))
         ]
     }
@@ -35,27 +35,27 @@ export default class Road {
     }
 
     getLaneCenter(index: number) {
-        return this.left + (this.laneWidth / 2) + Math.max(0, Math.min(index, this.lanes -1)) * this.laneWidth;
-    } 
+        return this.left + (this.laneWidth / 2) + Math.max(0, Math.min(index, this.lanes - 1)) * this.laneWidth;
+    }
 
     draw(ctx: CanvasRenderingContext2D) {
-        for (let i = 0; i <= this.lanes; i++) {
+        for (let i = 1; i <= this.lanes - 1; i++) {
             let x = lerp(this.left, this.right, i / this.lanes);
-            if(i > 0 && i < this.lanes) {
-                ctx.setLineDash([20,10]);
-                ctx.lineWidth = 2;
-                ctx.strokeStyle = "gray";
-            }
-            else if(i === 0 || i === this.lanes ) {
-                ctx.setLineDash([]);
-                ctx.strokeStyle = "blue";
-                ctx.lineWidth = 1;
-            }
+            ctx.setLineDash([20, 10]);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "gray";
+
             ctx.beginPath();
             ctx.moveTo(x, this.top);
             ctx.lineTo(x, this.bottom);
             ctx.stroke();
         }
+
+        ctx.setLineDash([]);
+
+        this.borders.forEach((b) => {
+            b.draw(ctx);
+        });
     }
 
 }

@@ -1,4 +1,6 @@
 import Controls from "./controls";
+import Road from "./road";
+import RaySensor from "./sensors/ray";
 
 export class Car {
     x: number;
@@ -7,10 +9,12 @@ export class Car {
     height: number;
     controls: Controls;
     speed = 0;
-    acceleration = 0.2;
+    acceleration = 0.5;
     maxSpeed = 3;
     friction = 0.05;
     angle = 0;
+
+    raySensor: RaySensor;
 
 
     constructor(x: number, y: number, width: number, height: number) {
@@ -19,6 +23,7 @@ export class Car {
         this.width= width;
         this.height = height;
         this.controls = new Controls();
+        this.raySensor = new RaySensor(this);
     }
 
     updateSpeed() {
@@ -49,20 +54,22 @@ export class Car {
         if(this.speed !== 0) {
             const flip = this.speed > 0 ? 1 : -1;
             if(this.controls.right) {
-                this.angle +=0.03 * flip;
+                this.angle -=0.03 * flip;
             }
             if(this.controls.left) {
-                this.angle -= 0.03 * flip;
+                this.angle += 0.03 * flip;
             }
         }
     }
 
 
-    update() {
+    update(road: Road) {
         this.updateSpeed();
         this.updateSteeringWheel();
         this.x -= Math.sin(this.angle) * this.speed;
         this.y -= Math.cos(this.angle) * this.speed;
+
+        this.raySensor.update(road);
     }
 
     draw(ctx: CanvasRenderingContext2D) {
@@ -78,6 +85,8 @@ export class Car {
         )
         ctx.fill();
         ctx.restore();
+
+        this.raySensor.draw(ctx);
     }
 
 }

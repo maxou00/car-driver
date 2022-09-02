@@ -1,12 +1,12 @@
 import Point from "./point";
+import Segment from "./segment";
 
-export default class Border {
-    points: Point[];
+export default class Border extends Segment{
 
     /**
      *
      */
     constructor(...points: Point[]) {
-        this.points = points;
+        super(...points);
     }
 }
